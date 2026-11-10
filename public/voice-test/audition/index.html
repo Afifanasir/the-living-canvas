@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Judas audition</title>
+<style>
+ :root{color-scheme:dark}
+ body{margin:0;background:#120c08;color:#efe6d2;font-family:Georgia,serif}
+ main{max-width:720px;margin:0 auto;padding:28px 20px 60px}
+ h1{font-weight:normal;letter-spacing:.1em;text-transform:uppercase;font-size:18px;color:#d9b26a;margin:0 0 6px}
+ p{opacity:.8;line-height:1.5}
+ .take{background:#1c140d;border:1px solid #4a3826;border-radius:10px;padding:12px 14px;margin:12px 0}
+ .take b{display:block;margin-bottom:2px}.take i{display:block;opacity:.7;font-size:14px;margin-bottom:8px}
+ audio{width:100%}
+</style></head><body><main>
+<h1>Judas · voice audition</h1>
+<p>The same short line, "Quiet! Don't look at my hands. Thirty pieces of silver…", hushed and paranoid, in four Italian voices. Pick the one with the accent you want; the full monologue and the other Italian characters follow from it.</p>
+<div class="take" style="border-color:#d9b26a"><b>Full monologue · Edgardo, whispered</b><i>Thick Italian accent, whispered throughout: nervous, urgent, shaky, then bitter dread</i><audio controls src="../elevenlabs/judas.mp3?v=3"></audio></div>
+<div class="take" style="border-color:#d9b26a"><b>New · ElevenLabs, more whispered</b><i>Same voice, told to whisper very quietly and breathily on every sentence</i><audio controls src="eleven/judas.mp3"></audio></div>
+<div class="take" style="border-color:#d9b26a"><b>More whisper · light</b><i>The take above with 30% breath-only blend</i><audio controls src="judas-whisper-30.mp3"></audio></div>
+<div class="take" style="border-color:#d9b26a"><b>More whisper · medium</b><i>50% breath-only blend</i><audio controls src="judas-whisper-50.mp3"></audio></div>
+<div class="take" style="border-color:#d9b26a"><b>More whisper · strong</b><i>70% breath-only blend</i><audio controls src="judas-whisper-70.mp3"></audio></div>
+<p style="margin-top:28px">Earlier short auditions:</p>
+<div class="take"><b>A · Edgardo</b><i>Native Italian speaker · dark, cinematic storyteller</i><audio controls src="a.mp3"></audio></div>
+<div class="take"><b>B · Dade M</b><i>Native Italian speaker · deep, quietly unsettling</i><audio controls src="b.mp3"></audio></div>
+<div class="take"><b>C · Stefano</b><i>Native Italian speaker · 60, raspy, from Bologna</i><audio controls src="c.mp3"></audio></div>
+<div class="take"><b>D · Luke Cala, forced Italian</b><i>Previous voice, told to read the English as an Italian speaker</i><audio controls src="d.mp3"></audio></div>
+</main>
+<script>document.addEventListener("play",(e)=>document.querySelectorAll("audio").forEach((a)=>a!==e.target&&a.pause()),true)</script>
+</body></html>
