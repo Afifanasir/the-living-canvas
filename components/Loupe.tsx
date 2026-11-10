@@ -170,9 +170,11 @@ export default function Loupe({ exhibit, target: clue, onNear, onFound }: LoupeP
     upload(`${dir}/hires.webp`);
     // The carved rail for the bezel, on texture unit 1.
     gl.uniform1i(gl.getUniformLocation(p, "uRail"), 1);
+    let railed = false; // until the rail is on the GPU the bezel would draw black, so the lens stays hidden
     const rail = new Image();
     rail.onload = () => {
       if (!alive) return;
+      railed = true;
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
       for (const [k, v] of [[gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE], [gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR]])
@@ -186,11 +188,13 @@ export default function Loupe({ exhibit, target: clue, onNear, onFound }: LoupeP
     let pos: { x: number; y: number } | null = null;
     let raf = 0;
     const frame = () => {
+      if (!area.current) return; // the glass was just put away: React lets go of the painting before this loop stops
       raf = requestAnimationFrame(frame);
       const t = target.current;
-      c.style.opacity = t.shown ? "1" : "0";
-      c.style.scale = t.shown ? "1" : "0.85";
-      if (!t.shown) {
+      const shown = t.shown && railed && natural > 0; // brass and painting both ready: never a black rim or blank glass
+      c.style.opacity = shown ? "1" : "0";
+      c.style.scale = shown ? "1" : "0.85";
+      if (!shown) {
         if (arrow.current) arrow.current.style.opacity = "0";
         return;
       }

@@ -181,6 +181,8 @@ function Artist({ exhibit: e, frame, rail, active, onEnter }: { exhibit: Exhibit
   const outerBox: Box = [fx - FRAME_PAD.x, fy - FRAME_PAD.y, fw + 2 * FRAME_PAD.x, fh + 2 * FRAME_PAD.y];
   // The frame that lifts off the wall when this artist is clicked (components/FrameFlip.tsx): ready before the click.
   preload(`/rooms/frames/${e.slug}.webp`, { as: "image" });
+  // And the painting itself, so the room it opens into never shows an empty frame while it downloads.
+  for (const f of ["base", "depth"]) preload(`/exhibits/${e.slug}/${f}.webp`, { as: "image", fetchPriority: "low" });
   const enter = () => outer.current && onEnter(e, outer.current, outerBox, frame);
   // The plaque hangs below the frame's carving (which ends 0.046 below the opening in every room), with clear wall
   // above and below it.

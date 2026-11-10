@@ -1,8 +1,9 @@
-// Subtitle timing. Each recording's real sentence starts are measured from the audio (scripts/cue-times.py →
-// lib/cue-times.json); where a recording has none, the clip is shared out by sentence length.
+// Subtitle timing. Each recording's real sentence starts are measured word by word from the audio
+// (scripts/cue-times.py → lib/cue-times.json); where a recording has none, the clip is shared out by sentence length.
 import times from "./cue-times.json";
 
 const PAD = 0.25; // silence at each end of every VO file
+const LEAD = 0.25; // the bubble fades the old line out (0.25 s) before the new one appears: start that much early
 
 export const sentences = (line: string) => line.split(/(?<=[.!?])\s+/).filter(Boolean);
 
@@ -10,7 +11,7 @@ export const sentences = (line: string) => line.split(/(?<=[.!?])\s+/).filter(Bo
  *  picks the measured timings for that recording. */
 export function cueAt(line: string, t: number, d: number, key?: string) {
   const measured = key ? (times as Record<string, number[]>)[key] : undefined;
-  if (measured) return measured.filter((start) => t >= start).length;
+  if (measured) return measured.filter((start) => t + LEAD >= start).length;
   const parts = sentences(line);
   const total = parts.reduce((n, s) => n + s.length, 0);
   const at = ((t - PAD) / Math.max(d - 2 * PAD, 0.001)) * total;

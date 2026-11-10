@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { preload } from "react-dom";
 import {
   AnimatePresence,
   motion,
@@ -31,19 +32,27 @@ export default function ExhibitRoom({
   next: string;
 }) {
   const [loupe, setLoupe] = useState(false);
+  // The rooms either side are fetched ahead, so the arrows never open onto an empty frame.
+  for (const s of [prev, next])
+    for (const f of ["base", "depth"]) preload(`/exhibits/${s}/${f}.webp`, { as: "image", fetchPriority: "low" });
+  preload("/frames/loupe-rail.webp", { as: "image" }); // the magnifying glass's brass rim, ready before it's taken out
   // The detective hunt: clues are found one at a time, in order.
   const [found, setFound] = useState(0); // how many clues are solved
   const [reveal, setReveal] = useState<Technique | null>(null); // the clue just found, shown until "next"
   const [near, setNear] = useState(0);
   const clue = reveal ? undefined : exhibit.techniques[found];
   const solved = found >= exhibit.techniques.length;
-  // "You have found everything…" is a moment, not a fixture: it fades after a few seconds.
+  // "You have found everything…" is a moment, not a fixture: after a few seconds the glass puts itself away (once;
+  // a visitor who takes it out again keeps it), and the light leads back to anyone it cut off.
   const [solvedShown, setSolvedShown] = useState(false);
   useEffect(() => {
-    if (!loupe || !solved || reveal) return;
-    const t = setTimeout(() => setSolvedShown(true), 4000);
+    if (!loupe || !solved || reveal || solvedShown) return;
+    const t = setTimeout(() => {
+      setSolvedShown(true);
+      setLoupe(false);
+    }, 4000);
     return () => clearTimeout(t);
-  }, [loupe, solved, reveal]);
+  }, [loupe, solved, reveal, solvedShown]);
   const { speaking } = useAudio();
   const voice = exhibit.hotspots.find(
     (h) => `${exhibit.slug}/${h.id}` === speaking,
