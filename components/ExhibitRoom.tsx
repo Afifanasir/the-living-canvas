@@ -54,21 +54,30 @@ export default function ExhibitRoom({
   const last = useRef<string | undefined>(undefined);
   // Who has just finished speaking: the light leaves them only once they are done, never mid-monologue.
   const [done, setDone] = useState<string | undefined>(undefined);
+  // Who the magnifying glass cut off mid-monologue: not heard yet, so once the glass is away the light leads back to them.
+  // (A ref as well as state: the effect below must see it in the same render the voice stops.)
+  const [cut, setCut] = useState<string | undefined>(undefined);
+  const cutRef = useRef<string | undefined>(undefined);
   useEffect(() => {
     // Read the ref now: the updater runs later, after the ref has moved on to the new voice.
     const finished = last.current;
-    if (finished && finished !== voice?.id)
+    const interrupted = finished === cutRef.current;
+    if (finished && finished !== voice?.id && !interrupted)
       setHeard((h) => (h.includes(finished) ? h : [...h, finished]));
-    setDone(voice?.id ? undefined : finished);
+    setDone(voice?.id || interrupted ? undefined : finished);
+    if (voice?.id) {
+      cutRef.current = undefined; // anyone speaking again settles it
+      setCut(undefined);
+    }
     last.current = voice?.id;
   }, [voice?.id]);
-  const nextVoice = exhibit.hotspots.find(
-    (h) => !heard.includes(h.id) && h.id !== voice?.id,
-  );
+  const nextVoice =
+    exhibit.hotspots.find((h) => h.id === cut) ??
+    exhibit.hotspots.find((h) => !heard.includes(h.id) && h.id !== voice?.id);
   // The hand-off waits until the speaker has finished completely: then the light glides from them to whoever answers,
   // and the bubble says "Follow the light to …". Before anyone speaks, the first figure simply glows.
   // (Not while the magnifying glass is out: then the bubble belongs to the clue hunt.)
-  const handOff = !voice && done && !loupe ? nextVoice : undefined;
+  const handOff = !voice && (done || cut) && !loupe ? nextVoice : undefined;
   // Each playback is a "take"; the next figure glows once the light from that take has landed on them.
   const [take, setTake] = useState(0);
   const [landed, setLanded] = useState(-1);
@@ -77,20 +86,29 @@ export default function ExhibitRoom({
 
   // Leaving the room ends the monologue.
   useEffect(() => stopVoice, [exhibit.slug]);
+  // Taking out the magnifying glass hands the room to the clue hunt: whoever is speaking fades out.
+  const toggleLoupe = () => {
+    if (!loupe && voice) {
+      cutRef.current = voice.id;
+      setCut(voice.id);
+      stopVoice(1);
+    }
+    setLoupe(!loupe);
+  };
 
   // L toggles the loupe, Escape puts it away.
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.metaKey || e.ctrlKey)
         return;
-      if (e.key === "l" || e.key === "L") setLoupe((on) => !on);
+      if (e.key === "l" || e.key === "L") toggleLoupe();
       if (e.key === "Escape") setLoupe(false);
       // A clue just found: → moves on to the next clue, like the "Next clue →" button.
       if (e.key === "ArrowRight" && reveal) setReveal(null);
     };
     addEventListener("keydown", key);
     return () => removeEventListener("keydown", key);
-  }, [reveal]);
+  });
 
   const toggle = (id: string) => {
     const key = `${exhibit.slug}/${id}`;
@@ -530,7 +548,7 @@ export default function ExhibitRoom({
                   <BrassButton
                     wide
                     on={loupe}
-                    onClick={() => setLoupe((on) => !on)}
+                    onClick={toggleLoupe}
                     keys="L"
                   >
                     <LoupeIcon />{" "}

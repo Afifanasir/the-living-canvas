@@ -27,7 +27,7 @@ let master: GainNode, buses: Record<Kind | "voice", GainNode>;
 const tracks = new Map<string, Track>(); // by url; an element can only be wired into the graph once
 const current: Record<Kind, string | undefined> = { music: undefined, ambience: undefined };
 let scene: Scene = {};
-let voice: { el: HTMLAudioElement; id: string } | null = null;
+let voice: { el: HTMLAudioElement; gain: GainNode; id: string } | null = null;
 let roomSend: GainNode | null = null;
 
 // ---- state for React ------------------------------------------------------
@@ -169,18 +169,26 @@ export function speak(url: string, id: string, dry = false) {
   stopVoice();
   if (roomSend) roomSend.gain.value = dry ? 0 : ROOM; // a dry voice skips the shared hall
   const t = track(url, buses.voice, false);
+  t.gain.gain.cancelScheduledValues(0); // drop a fade-out still running from an earlier stop
   t.gain.gain.value = 1;
   t.el.currentTime = 0;
   t.el.onended = () => voice?.el === t.el && stopVoice();
-  voice = { el: t.el, id };
+  voice = { el: t.el, gain: t.gain, id };
   t.el.play().catch(() => stopVoice());
   duck(true);
   emit({ speaking: id });
 }
 
-export function stopVoice() {
+/** Ends the current voice; with `fade` (seconds) it fades out instead of cutting off. */
+export function stopVoice(fade = 0) {
   if (!voice) return;
-  voice.el.pause();
+  const { el, gain } = voice;
+  if (fade) {
+    const g = gain.gain, now = gain.context.currentTime;
+    g.setValueAtTime(g.value, now);
+    g.linearRampToValueAtTime(0, now + fade);
+    setTimeout(() => voice?.el !== el && el.pause(), fade * 1000); // unless the same voice was started again
+  } else el.pause();
   voice = null;
   duck(false);
   emit({ speaking: null });
