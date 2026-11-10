@@ -2,7 +2,7 @@
 
 **A museum of voices.** What if museum masterpieces were not silent relics on a wall, but living crime scenes, confessions, and psychological thrillers frozen in oil?
 
-**Live demo:** [the-living-canvas.netlify.app](https://the-living-canvas.netlify.app) · best experienced on a laptop or desktop, with sound on.
+**Live demo:** [the-living-canvas-museum.vercel.app](https://the-living-canvas-museum.vercel.app) · best experienced on a laptop or desktop, with sound on.
 
 ![The Living Canvas: the foyer opening onto the gallery, the wings, a portrait stepping into its room, a figure speaking and the magnifying glass finding a clue](docs/demo.gif)
 
