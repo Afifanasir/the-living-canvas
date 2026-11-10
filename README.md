@@ -55,7 +55,7 @@ All the paintings, voices and music are included in `public/`, so nothing else i
 - **Framework:** [Next.js](https://nextjs.org) 16 (App Router) with React 19, [Tailwind CSS](https://tailwindcss.com) 4 and [Motion](https://motion.dev) (formerly Framer Motion) for animation.
 - **Living paintings:** each painting has a depth map made with [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2). A WebGL shader shifts every pixel by its depth as the visitor moves, so the canvas gains real parallax depth (`components/Painting.tsx`).
 - **The magnifying glass:** a WebGL lens with glass refraction, a carved gilt rim and clue detection that adapts its magnification to each clue (`components/Loupe.tsx`).
-- **Sound:** a single Web Audio graph mixes room music, the gallery ambience and the voices, with crossfades between rooms, ducking under dialogue and a shared hall reverb (`lib/audio.ts`). Subtitles are timed to each recording's measured pauses (`lib/cue-times.json`).
+- **Sound:** a single Web Audio graph mixes room music, the gallery ambience and the voices, with crossfades between rooms, ducking under dialogue and a shared hall reverb (`lib/audio.ts`). Subtitles are timed word by word from each recording with an offline speech model (`scripts/cue-times.py` → `lib/cue-times.json`).
 - **The walk:** scroll-driven, one gesture per step, with an eased glide that follows the trackpad (`app/page.tsx`, `components/WingWalk.tsx`).
 - **Content:** every painting, character, monologue and clue lives in one file, `content/gallery.ts`.
 
