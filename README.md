@@ -6,6 +6,13 @@
 
 ![The Living Canvas: the foyer opening onto the gallery, the wings, a portrait stepping into its room, a figure speaking and the magnifying glass finding a clue](docs/demo.gif)
 
+*The walkthrough above plays at double speed. [Watch the full video with sound](docs/demo.mp4).*
+
+| | |
+| --- | --- |
+| ![The welcome hall](docs/screenshots/1-welcome-hall.jpg) | ![Wing II, the Baroque: Rembrandt and Vermeer](docs/screenshots/2-wing-baroque.jpg) |
+| ![Girl with a Pearl Earring: the Girl speaks, with subtitles](docs/screenshots/3-girl-speaking.jpg) | ![The magnifying glass finds the illusion of the pearl](docs/screenshots/4-magnifying-glass.jpg) |
+
 ## About
 
 The Living Canvas is an immersive digital exhibition spanning four monumental eras of art history: **The High Renaissance, The Baroque, Romanticism, and Post-Impressionism & Expressionism**. Moving beyond passive museum plaques, it reimagines eight iconic canvases, from Leonardo da Vinci's *The Last Supper* to Edvard Munch's *The Scream*, as multi-sensory encounters where visual inspection, voice acting and period music converge into one cohesive narrative experience.
